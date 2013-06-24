@@ -18,7 +18,7 @@ class ExternalIPCheck(Base):
 	def on_start(self):
 		self.check_external_ip_addr()
 
-		print get_ipaddr()
+		print self._ipaddr
 
 	def source_loopia(self):
 		conn = httplib.HTTPConnection("dns.loopia.se")
@@ -29,7 +29,7 @@ class ExternalIPCheck(Base):
   		if resp.status != 200:
   			return None
 
-  		result = re.findall(r'[0-9]+(?:\.[0-9]+){3}', response.read())
+  		result = re.findall(r'[0-9]+(?:\.[0-9]+){3}', resp.read())
 
   		if result:
   			self._ipaddr = result[0]
