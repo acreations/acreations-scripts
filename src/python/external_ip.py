@@ -20,10 +20,7 @@ class ExternalIPCheck(Base):
 	def on_start(self):
 		self.check_external_ip_addr()
 
-		log.debug("Found ip address: %s" % self._ipaddr)
-
-		if not self.get_opts().quiet:
-			print self._ipaddr
+		log.info("Found ip address: %s" % self._ipaddr)
 
 	def source_loopia(self):
 		server = "dns.loopia.se"
