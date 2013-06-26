@@ -14,17 +14,16 @@ class LoopiaDNSUpdater(NotifyBase):
 	CMD_CURL = "/usr/bin/curl"		
 
 	def get_mailto(self):
-		configs = self.get_configs()
-
-		return configs.get(self.CONF_SECTION, "mailto")
+		return self.get_configs().get(self.CONF_SECTION, "mailto")
 
 	def get_smtp_server(self):
-		configs = self.get_configs()
-
-		return configs.get(self.CONF_SECTION, "smtp_server")
+		return self.get_configs().get(self.CONF_SECTION, "smtp_server")
 
 	def get_title(self):
 		return "SUMMARY LOOPIA DNS UPDATER"
+
+	def get_sender(self):
+		return self.get_configs().get(self.CONF_SECTION, "sender")
 
 	def get_subject(self):
 		return "[%s] LOOPIA DNS UPDATER" % self._response
