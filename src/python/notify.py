@@ -20,8 +20,8 @@ class NotifyBase(Base):
 		= {PID} - {TITLE}
 		=====================================
 
-		Start time:  {START_TIME}
-		Finish time: {FINISH_TIME}
+		Start time: \t {START_TIME}
+		Finish time: \t {FINISH_TIME}
    
 		""".format(**data)
 
