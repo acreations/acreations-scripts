@@ -37,14 +37,13 @@ class LoopiaDNSUpdater(NotifyBase):
 		parser.description = "Update Loopia DNS"
 
 	def on_start(self):
-		#self._set_external_ip_address()
-		#self._validate_or_die_ip_addr()
+		self._set_external_ip_address()
+		self._validate_or_die_ip_addr()
 		self._validate_or_die_curl()
 		self._validate_or_die_credentials()
 		
-		#command  = "curl -s --user '%s' '%s?hostname=%s&myip=%s'" % (self._credentials, self._url, self._host, self._ipAddress)
-		#self._response = os.popen(command).read()
-		self._response = "NOCHG"
+		command  = "curl -s --user '%s' '%s?hostname=%s&myip=%s'" % (self._credentials, self._url, self._host, self._ipAddress)
+		self._response = os.popen(command).read()
 		self.finish()
 
 	def _set_external_ip_address(self):
