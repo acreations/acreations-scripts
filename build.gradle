@@ -1,0 +1,9 @@
+
+task build(type:Copy) {
+	from('src') {
+		include '**/*.sh'
+		include '**/*.py'
+	}
+	into 'build/target/scripts'
+	exclude '**/*.pyc'
+}
