@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 from base import Base
 from notify import NotifyBase
 from external_ip import ExternalIPCheck

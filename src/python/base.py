@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 from ConfigParser import SafeConfigParser
 from datetime import datetime
 from optparse import OptionParser

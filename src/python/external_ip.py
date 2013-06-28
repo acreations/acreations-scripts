@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 from base import Base
 
 import httplib
