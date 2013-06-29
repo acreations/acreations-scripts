@@ -14,7 +14,8 @@ class CreatePythonScriptSkeleton(Base):
 
 	def on_create_option_parser(self, parser):
 		parser.description = "Generate a skeleton for python script"
-		parser.add_option("-n", "--name",    action="store", help="script name")
+		parser.add_option("-n", "--name",   action="store",      help="script name")
+		parser.add_option("",   "--notify", action="store_true", help="notify base")
 
 	def on_start(self):
 		self._validate_or_die()
@@ -23,7 +24,7 @@ class CreatePythonScriptSkeleton(Base):
 		log.info("Create script with name: '%s'" % self._target_name)
 
 		self._basepath = os.path.dirname(os.path.realpath(__file__))
-		self._skeleton = self._basepath + os.sep + self.SCRIPT_SKELETON_BASE
+		self._skeleton = self._get_skeleton_file_path()
 		self._target   = self._target_name + self.PYTHON_EXT
 
 		f = file(self._skeleton, "r")
@@ -36,10 +37,6 @@ class CreatePythonScriptSkeleton(Base):
 
 		os.system("chmod 755 %s" % self._target)
 
-	def _sanitize_script_name(self):
-		if self._target_name.endswith(self.PYTHON_EXT):
-			self._target_name = self._target_name[:-3]
-
 	def _convert_to_class_name(self):
 		result = self._target_name
 
@@ -48,6 +45,23 @@ class CreatePythonScriptSkeleton(Base):
 		result = result.replace(" ", "")
 
 		return result
+
+	def _get_skeleton_file_path(self):
+		opts = self.get_opts()
+
+		result = self._basepath + os.sep
+
+		if opts.notify:
+			result = result + self.SCRIPT_SKELETON_NOTIFY
+		else:
+			result = result + self.SCRIPT_SKELETON_BASE
+
+		return result
+
+
+	def _sanitize_script_name(self):
+		if self._target_name.endswith(self.PYTHON_EXT):
+			self._target_name = self._target_name[:-3]
 
 	def _validate_or_die(self):
 		opts = self.get_opts()

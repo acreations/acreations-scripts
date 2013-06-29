@@ -1,0 +1,20 @@
+#!/usr/bin/python
+
+from notify import NotifyBase
+
+import logging as log		
+
+class {CLASS_NAME}(NotifyBase):
+
+	def on_create_option_parser(self, parser):
+		parser.description = "Description of the script"
+
+	def on_start(self):
+		log.info("Do something here")
+		self.finish()
+
+	def on_finish(self):
+		log.info("Clean up")
+
+if __name__ == '__main__':
+	{CLASS_NAME}().run()
