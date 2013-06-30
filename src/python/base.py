@@ -71,6 +71,7 @@ class Base:
 		return self._parser
 
 	def finish(self):
+		log.info("Finish running script")
 		self._finish_time = datetime.now().strftime(self.DATETIME_FORMAT)
 		self.on_finish()
 
@@ -108,6 +109,7 @@ class Base:
 		pass
 
 	def start(self):
+		log.info("Start running script")
 		self._start_time = datetime.now().strftime(self.DATETIME_FORMAT)
 		self.on_start()
 

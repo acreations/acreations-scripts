@@ -21,9 +21,7 @@ class NotifyBase(Base):
 		=====================================
 
 		Start time: \t {START_TIME}
-		Finish time: \t {FINISH_TIME}
-   
-		""".format(**data)
+		Finish time: \t {FINISH_TIME}""".format(**data)
 
 	def get_mailto(self):
 		return None
