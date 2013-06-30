@@ -26,9 +26,10 @@ class CreatePythonScriptSkeleton(Base):
 		self._basepath = os.path.dirname(os.path.realpath(__file__))
 		self._skeleton = self._get_skeleton_file_path()
 		self._target   = self._target_name + self.PYTHON_EXT
+		self._class    = self._convert_to_class_name()
 
 		f = file(self._skeleton, "r")
-		skeleton = f.read().format(CLASS_NAME=self._convert_to_class_name())
+		skeleton = f.read().format(CLASS_NAME=self._class)
 		f.close()
 
 		f = file(self._target, "w")
