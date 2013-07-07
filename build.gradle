@@ -1,9 +1,10 @@
-
-task build(type:Copy) {
-	from('src') {
-		include '**/*.sh'
-		include '**/*.py'
-	}
-	into 'build/target/scripts'
+task copy(type:Copy) {
+	from fileTree("src").files
+	into 'build/scripts'
 	exclude '**/*.pyc'
+	includeEmptyDirs = false
+}
+
+task build {
+	copy.execute()
 }
