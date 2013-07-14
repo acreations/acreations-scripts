@@ -60,7 +60,10 @@ class ExternalDrive(Base):
 
 				if os.path.exists(source):
 					if not os.path.ismount(target):
-						os.system("sudo mount %s %s" % (source, target))
+						if self.is_truecrypt_volume(drive):
+							os.sytem("truecrypt %s %s" % (source, target))
+						else:
+							os.system("sudo mount %s %s" % (source, target))
 					else:
 						log.warn("Directory '%s' is already mounted", target)
 				else:
@@ -77,9 +80,10 @@ class ExternalDrive(Base):
 
 				if os.path.exists(source):
 					if not os.path.ismount(target):
-
-
-						print("sudo mount %s %s" % (source, target))
+						if self.is_truecrypt_volume(drive):
+							os.sytem("truecrypt -d %s" % target)
+						else:
+							os.system("sudo umount %s" % target)
 					else:
 						log.warn("Directory '%s' is already mounted", target)
 				else:
