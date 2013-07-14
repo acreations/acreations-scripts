@@ -17,14 +17,14 @@ class ConfigFileCopy(Config):
 		return "source"
 
 	def run_configuration(self):
-		command = "cp %s %s" % (self.get_file_source, self.get_file_target())
+		command = "cp %s %s" % (self.get_file_source(), self.get_file_target())	
 
 		self.run_command(command)
 
 	def validate(self):
 		source = self.get_file_source()
 
-		validate_source = update and path.isfile(source) and access(source, R_OK)
+		validate_source = source and path.isfile(source) and access(source, R_OK)
 
 		if not validate_source:
 			log.warn("Source does not exist or is not accessible")
