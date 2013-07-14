@@ -37,7 +37,7 @@ class ExternalDrive(Base):
 
 				if os.path.exists(source):
 					if not os.path.ismount(target):
-						print("sudo mount %s %s" % (source, target))
+						os.system("sudo mount %s %s" % (source, target))
 					else:
 						log.warn("Directory '%s' is already mounted", target)
 				else:
@@ -68,7 +68,7 @@ class ExternalDrive(Base):
 			target = "%s/%s" % (self.MOUNT_DIR, drive)
 			if not os.path.isdir(target):
 				log.debug("Create mount directory for %s", target)
-				print "sudo mkdir -p %s " % target
+				os.system("sudo mkdir -p %s " % target)
 
 	def _help_available_drives(self):
 		return '''
