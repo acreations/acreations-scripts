@@ -37,6 +37,8 @@ class Config(Base):
 			os.system("sudo %s" % command)
 		else:
 			os.system(command)
+		
+		self.finish()
 
 	def sudo_needed(self):
 		return False

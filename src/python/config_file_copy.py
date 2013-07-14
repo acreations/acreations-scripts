@@ -7,6 +7,12 @@ import logging as log
 
 class ConfigFileCopy(Config):
 
+	def copy(self, source, target):
+		self.run_command("cp %s %s" % source, target)
+
+	def copy_recursive(self, source, target):
+		self.run_command("cp -rf %s %s" % source, target)
+
 	def has_run(self):
 		return path.isfile(self.get_file_target())
 
@@ -17,9 +23,7 @@ class ConfigFileCopy(Config):
 		return "source"
 
 	def run_configuration(self):
-		command = "cp %s %s" % (self.get_file_source(), self.get_file_target())	
-
-		self.run_command(command)
+		self.copy(self.get_file_source(), self.get_file_target())
 
 	def validate(self):
 		source = self.get_file_source()
