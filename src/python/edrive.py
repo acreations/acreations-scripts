@@ -63,6 +63,9 @@ class ExternalDrive(Base):
 		elif opts.list:
 			print self._help_available_drives()
 
+		else:
+			log.error("No options given")
+
 	def _create_directories(self):
 		for drive in self.selected:
 			target = "%s/%s" % (self.MOUNT_DIR, drive)
