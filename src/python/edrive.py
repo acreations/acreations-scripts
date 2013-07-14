@@ -79,13 +79,13 @@ class ExternalDrive(Base):
 				target = "%s/%s" % (self.get_mount_directory(), drive)
 
 				if os.path.exists(source):
-					if not os.path.ismount(target):
+					if os.path.ismount(target):
 						if self.is_truecrypt_volume(drive):
 							os.system("truecrypt -d %s" % target)
 						else:
 							os.system("sudo umount %s" % target)
 					else:
-						log.warn("Directory '%s' is already mounted", target)
+						log.warn("Directory '%s' is not mounted", target)
 				else:
 					log.warn("Edrive %s is not connected to the system" % drive)
 
