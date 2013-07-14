@@ -58,6 +58,8 @@ class ExternalDrive(Base):
 				source = "%s/%s" % (self.get_disk_directory(), self._get_uuid(drive))
 				target = "%s/%s" % (self.get_mount_directory(), drive)
 
+				source = os.path.realpath(source)
+
 				if os.path.exists(source):
 					if not os.path.ismount(target):
 						if self.is_truecrypt_volume(drive):
@@ -77,6 +79,8 @@ class ExternalDrive(Base):
 			for drive in self.selected:
 				source = "%s/%s" % (self.get_disk_directory(), self._get_uuid(drive))
 				target = "%s/%s" % (self.get_mount_directory(), drive)
+
+				source = os.path.realpath(source)
 
 				if os.path.exists(source):
 					if os.path.ismount(target):
