@@ -19,6 +19,7 @@ class ExternalDrive(Base):
 		parser.add_option("-m", "--mount",  action="store",      help="Mount edrive")
 		parser.add_option("-u", "--umount", action="store",      help="Umount edrive")
 		parser.add_option("-l", "--list",   action="store_true", help="List edrive(s)")
+		parser.add_option("-a", "--avail",   action="store_true", help="Available edrive(s)")
 
 	def on_start(self):
 		self.drives = self._get_edrives()
@@ -61,8 +62,9 @@ class ExternalDrive(Base):
 					log.warn("Edrive %s is not connected to the system" % drive)
 
 		elif opts.list:
+			print self._help_list_drives()
+		elif opts.avail:
 			print self._help_available_drives()
-
 		else:
 			log.error("No options given")
 
@@ -74,8 +76,22 @@ class ExternalDrive(Base):
 				os.system("sudo mkdir -p %s " % target)
 
 	def _help_available_drives(self):
+		drives = list()
+
+		for drive in self.drives:
+			source = "%s/%s" % (self.DISK_DIR, self._get_uuid(drive))
+			if os.path.exists(source):
+				drives.append(drive)
+
 		return '''
-Available edrive(s):
+Available edrive(s)
+
+%s
+		''' % "\n".join(drives)
+
+	def _help_list_drives(self):
+		return '''
+List edrive(s):
 
 %s
 		''' % "\n".join(self.drives)
