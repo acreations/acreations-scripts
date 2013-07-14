@@ -11,8 +11,30 @@ class ExternalDrive(Base):
 
 	CONF_SECTION = "edrive"
 
-	DISK_DIR  = "/dev/disk/by-uuid"
-	MOUNT_DIR = "/opt/media"
+	def get_disk_directory(self):
+		configs = self.get_configs()
+
+		if configs.has_option(self.CONF_SECTION, "disk_dir"):
+			return configs.get(self.CONF_SECTION, "disk_dir")
+
+		return "/dev/disk/by-id"
+
+	def get_mount_directory(self):
+		configs = self.get_configs()
+
+		if configs.has_option(self.CONF_SECTION, "mount_dir"):
+			return configs.get(self.CONF_SECTION, "mount_dir")
+
+		return "opt/media"
+
+	def is_truecrypt_volume(self, drive):
+		configs = self.get_configs()
+		option  = "%s_mount" % drive
+
+		if configs.has_option(self.CONF_SECTION, option):
+			return configs.get(self.CONF_SECTION, option).lower() == "truecrypt"
+
+		return False
 
 	def on_create_option_parser(self, parser):
 		parser.description = "Script used to mount predefined external drives"
@@ -33,8 +55,8 @@ class ExternalDrive(Base):
 			self._create_directories()
 
 			for drive in self.selected:
-				source = "%s/%s" % (self.DISK_DIR, self._get_uuid(drive))
-				target = "%s/%s" % (self.MOUNT_DIR, drive)
+				source = "%s/%s" % (self.get_disk_directory(), self._get_uuid(drive))
+				target = "%s/%s" % (self.get_mount_directory(), drive)
 
 				if os.path.exists(source):
 					if not os.path.ismount(target):
@@ -50,11 +72,13 @@ class ExternalDrive(Base):
 			self._create_directories()
 
 			for drive in self.selected:
-				source = "%s/%s" % (self.DISK_DIR, self._get_uuid(drive))
-				target = "%s/%s" % (self.MOUNT_DIR, drive)
+				source = "%s/%s" % (self.get_disk_directory(), self._get_uuid(drive))
+				target = "%s/%s" % (self.get_mount_directory(), drive)
 
 				if os.path.exists(source):
 					if not os.path.ismount(target):
+
+
 						print("sudo mount %s %s" % (source, target))
 					else:
 						log.warn("Directory '%s' is already mounted", target)
@@ -70,7 +94,7 @@ class ExternalDrive(Base):
 
 	def _create_directories(self):
 		for drive in self.selected:
-			target = "%s/%s" % (self.MOUNT_DIR, drive)
+			target = "%s/%s" % (self.get_mount_directory(), drive)
 			if not os.path.isdir(target):
 				log.debug("Create mount directory for %s", target)
 				os.system("sudo mkdir -p %s " % target)
@@ -79,7 +103,7 @@ class ExternalDrive(Base):
 		drives = list()
 
 		for drive in self.drives:
-			source = "%s/%s" % (self.DISK_DIR, self._get_uuid(drive))
+			source = "%s/%s" % (self.get_disk_directory(), self._get_uuid(drive))
 			if os.path.exists(source):
 				drives.append(drive)
 
@@ -104,7 +128,6 @@ List edrive(s):
 		result = list()
 
 		if self._is_all_tag(disks):
-			log.debug("Tag all selected")
 			result = self.drives
 		else:
 			result = re.sub(r'\s+', '', disks).split(",")
