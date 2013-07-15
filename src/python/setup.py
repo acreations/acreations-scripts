@@ -2,10 +2,12 @@
 
 from notify import NotifyBase
 
+import imp
 import logging as log
 import fnmatch
 import os
 import socket
+import sys
 
 class Setup(NotifyBase):
 
@@ -38,6 +40,7 @@ class Setup(NotifyBase):
 
 	def on_create_option_parser(self, parser):
 		parser.description = "Description of the script"
+		parser.add_option("-l", "--list", action="store_true", help="List configurations")
 		parser.add_option("-r", "--root", action="store", help="Root path of configurations")
 
 	def on_start(self):
@@ -47,7 +50,16 @@ class Setup(NotifyBase):
 		self.common = self.get_configurations(self._data['common'])
 		self.local  = self.get_configurations(self._data['local'])
 
-		self.run_configure()
+		opts = self.get_opts()
+
+		if opts.list:
+			if self.common:
+				self._print_configuration(self.common, "Available common configurations:")
+			
+			if self.local:
+				self._print_configuration(self.local,  "Available local configurations:")
+		else:
+			self.run_configure()		
 
 	def run_configure(self):
 		log.info("Root script directory: %s", self._data[self.CONF_ROOT])
@@ -58,14 +70,14 @@ class Setup(NotifyBase):
 		log.info("Found %s local configurations" % len(self.local))
 		self.setup(self.local)
 
-		self.finish()
+		#self.finish()
 
 	def setup(self, configs):
 		for conf in configs:
 			normalized = self._normalize(conf)
 
-			directory, filename = os.path.split(os.path.abspath(conf))
-		
+			directory, filename = os.path.split(os.path.realpath(conf))
+				
 			os.chdir(directory)
 		
 			if os.system("echo run %s" % conf) == 0:
@@ -82,7 +94,7 @@ class Setup(NotifyBase):
 		result = []
 		for base, dirs, filenames in os.walk(path, followlinks=True):
 			for filename in fnmatch.filter(filenames, 'configure.py'):
-				result.append(os.path.join(base, filename))
+				result.append(os.path.realpath(os.path.join(base, filename)))
 		return result
 
 	def _normalize(self, path):
@@ -92,6 +104,32 @@ class Setup(NotifyBase):
 		result = result.replace("/configure.py", "")
 
 		return result
+
+	def _print_configuration(self, configs, title):
+		print """
+%s
+
+  Run Scriptname  Description
+  === =========== =============
+""" % title
+				
+		
+				
+		for conf in configs:
+			scriptname = os.path.split(self._normalize(conf))[1]
+			directory  = os.path.split(conf)[0]
+			
+			klass = imp.load_source('module_%s' % scriptname, conf).ConfigRunner()
+			
+			run = "-"
+			
+			if klass.has_run():
+				run = "*"
+			
+			print "   %s  %s\t - %s" % (run, scriptname, klass.get_description())
+		
+		print
+		
 
 	def _set_configurations(self):
 		configs = self.get_configs()
@@ -120,6 +158,8 @@ class Setup(NotifyBase):
 		if not os.path.isdir(self._data[self.CONF_ROOT]):
 			log.error("Root path for configurations does not exist")
 			exit(2)
+			
+		self._data[self.CONF_ROOT] = os.path.realpath(self._data[self.CONF_ROOT])
 
 
 if __name__ == '__main__':

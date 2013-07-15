@@ -13,7 +13,7 @@ class CreatePythonScriptSkeleton(Base):
 	PYTHON_EXT = ".py"
 
 	def on_create_option_parser(self, parser):
-		parser.description = "Generate a skeleton for python script"
+		parser.description = "Create a skeleton for python script"
 		parser.add_option("-n", "--name",   action="store",      help="script name")
 		parser.add_option("",   "--notify", action="store_true", help="notify base")
 

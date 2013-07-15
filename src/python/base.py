@@ -14,11 +14,6 @@ class Base:
 	DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
 	DEFAULT_CONFIGURATION = "configuration/default"
 
-	def __init__(self):
-		self._init_option_parser_()
-		self._init_logger_()
-		self._init_config_parser_()
-
 	def _init_config_parser_(self):
 		self._config = SafeConfigParser()
 
@@ -61,7 +56,9 @@ class Base:
 		return log
 
 	def _init_option_parser_(self):
-		self._parser = OptionParser()
+		OptionParser.format_epilog = lambda self, formatter: self.epilog
+		
+		self._parser = OptionParser(epilog=self.get_epilog())
 		self._parser.add_option("-c", "--config", action="store", help="custom configuration file")
 		self._parser.add_option("-v", "--verbose" , action="store_true" , help="verbose mode")
   		self._parser.add_option("-q", "--quiet"   , action="store_true" , help="quiet mode except errors")
@@ -84,8 +81,36 @@ class Base:
 	def get_configs(self):
 		return self._config
 
+	def get_epilog(self):
+		result = list()
+		
+		help_config = self.get_help_configuration()
+		if help_config:
+			result.append("\nSample configurations: ")
+			result.append(help_config)
+			
+		help_examples = self.get_help_examples()
+		if help_examples:
+			result.append("\nExamples: ")
+			result.append(help_examples)
+		
+		help_footer = self.get_help_footer()
+		if help_footer:
+			result.append(help_footer)
+	
+		return "\n".join(result)
+
 	def get_finish_time(self):
 		return self._finish_time
+
+	def get_help_configuration(self):
+		return None
+		
+	def get_help_examples(self):
+		return None
+		
+	def get_help_footer(self):
+		return None
 
 	def get_opts(self):
 		return self._opts
@@ -114,6 +139,10 @@ class Base:
 		self.on_start()
 
 	def run(self):
+		self._init_option_parser_()
+		self._init_logger_()
+		self._init_config_parser_()
+	
 		log.debug("Start running the script")
 		log.debug("Options:   %s" % self.get_opts())
 		log.debug("Arguments: %s" % self.get_args())

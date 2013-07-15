@@ -12,6 +12,22 @@ class Mirrorsync(NotifyBase):
 	CONF_TARGET  = "TARGET"
 	CONF_FAILURE = "FAILURE"
 
+	def get_help_configuration(self):
+		return """
+  Section must be provided
+  
+  [%s]
+  
+  config        info                              mandatory
+  =========================================================
+  mailto      - receivers                             *
+  smtp_server                                         *
+    
+  SOURCE      - Backup from source                    *
+  TARGET      - Sync source to directory              *
+  
+""" % self.CONF_SECTION
+
 	def get_mailto(self):
 		return self.get_configs().get(self.CONF_SECTION, "mailto")
 

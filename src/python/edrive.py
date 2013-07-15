@@ -19,13 +19,36 @@ class ExternalDrive(Base):
 
 		return "/dev/disk/by-id"
 
+	def get_help_configuration(self):
+		return """
+  Section must be provided
+		
+  [%s]
+		
+  disk_dir  - set the lookup disk path [default: /dev/disk/by-id]
+  mount_dir - set the mount target     [default: /opt/media]
+  edrives   - all edrives that can be mounted/umounted 
+              [comma-seperated list]
+              
+  For each drive specified in edrives, it must exist as a configuration
+  
+  e.g 
+  
+  edrives = external_disk
+  
+  external_disk = <ID-found-in-disk_dir>
+  external_disk_mount = truecrypt [if the volume is of type truecrypt]
+  
+
+""" % self.CONF_SECTION
+
 	def get_mount_directory(self):
 		configs = self.get_configs()
 
 		if configs.has_option(self.CONF_SECTION, "mount_dir"):
 			return configs.get(self.CONF_SECTION, "mount_dir")
 
-		return "opt/media"
+		return "/opt/media"
 
 	def is_truecrypt_volume(self, drive):
 		configs = self.get_configs()
@@ -44,9 +67,11 @@ class ExternalDrive(Base):
 		parser.add_option("-a", "--avail",   action="store_true", help="Available edrive(s)")
 
 	def on_start(self):
-		self.drives = self._get_edrives()
 		self._validate_or_die()
-
+		
+		self._set_edrives()
+		self._validate_drives_or_die()
+		
 		opts = self.get_opts()
 
 		if opts.mount:
@@ -119,14 +144,14 @@ class ExternalDrive(Base):
 Available edrive(s)
 
 %s
-		''' % "\n".join(drives)
+''' % "\n".join(drives)
 
 	def _help_list_drives(self):
 		return '''
 List edrive(s):
 
 %s
-		''' % "\n".join(self.drives)
+''' % "\n".join(self.drives)
 
 	def _is_all_tag(self, text):
 	    compare = text.lower()
@@ -141,8 +166,8 @@ List edrive(s):
 			result = re.sub(r'\s+', '', disks).split(",")
 		return result
 
-	def _get_edrives(self):
-		return re.sub(r'\s+', '', self.get_configs().get(self.CONF_SECTION, "edrives")).split(",")
+	def _set_edrives(self):
+		self.drives = re.sub(r'\s+', '', self.get_configs().get(self.CONF_SECTION, "edrives")).split(",")
 
 	def _get_uuid(self, edrive):
 		configs = self.get_configs()
@@ -151,16 +176,23 @@ List edrive(s):
 		return None
 
 	def _validate_or_die(self):
+		configs = self.get_configs()
+		
+		if not configs.has_section(self.CONF_SECTION):
+			log.error("Configuration does not contains a section '%s'" % self.CONF_SECTION)
+			exit(2)
+
+	def _validate_drives_or_die(self):
 		for drive in self.drives:
 			if not self._get_uuid(drive):
 				log.error("There does not exist a uuid option for: %s" % drive)
-				exit(1)
+				exit(5)
 
 	def _validate_selected_or_die(self):
 		for drive in self.selected:
 			if not drive in self.drives:
 				log.error("No mapping exist for %s, exiting ... " % drive)
-				exit(2)
+				exit(6)
 
 if __name__ == '__main__':
 	ExternalDrive().run()

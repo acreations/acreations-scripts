@@ -14,6 +14,24 @@ class LoopiaDNSUpdater(NotifyBase):
 	URL_DNS  = "https://dns.loopia.se/XDynDNSServer/XDynDNS.php"
 	CMD_CURL = "/usr/bin/curl"		
 
+	def get_help_configuration(self):
+		return """
+  Section must be provided
+  
+  [%s]
+  
+  config        info                              mandatory
+  =========================================================
+  mailto      - receivers                             *
+  smtp_server                                         *
+  sender                                              
+  
+  credentials   credentials for updating Loopia DNS   *
+  host          hostname on Loopia                    *
+  url           url for updating Loopia DNS
+  
+""" % self.CONF_SECTION
+
 	def get_mailto(self):
 		return self.get_configs().get(self.CONF_SECTION, "mailto")
 

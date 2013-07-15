@@ -16,7 +16,7 @@ class ConfigFileCopy(Config):
 	def has_run(self):
 		return path.isfile(self.get_file_target())
 
-	def get_file_ta	rget(self):
+	def get_file_target(self):
 		return None
 
 	def get_file_source(self):
