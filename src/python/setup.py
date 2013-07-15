@@ -141,8 +141,8 @@ class Setup(NotifyBase):
 		if opts.root:
 			self._data[self.CONF_ROOT] = opts.root
 
-		self._data['common'] = self._data[self.CONF_ROOT] + "/common/conf/"
-		self._data['local']  = self._data[self.CONF_ROOT] + socket.gethostname() + "/conf/"
+		self._data['common'] = os.path.realpath("%s/common/conf/" % self._data[self.CONF_ROOT])
+		self._data['local']  = os.path.realpath("%s/%s/conf/" % (self._data[self.CONF_ROOT], socket.gethostname()))
 
 	def _validate_or_die(self):
 		if not self._data[self.CONF_ROOT]:
