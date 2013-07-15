@@ -35,9 +35,6 @@ class Setup(NotifyBase):
 	def get_title(self):
 		return "SUMMARY OF SETUP"
 
-	def on_create_config_parser(self, config):
-		log.info("test")
-
 	def on_create_option_parser(self, parser):
 		parser.description = "Description of the script"
 		parser.add_option("-l", "--list", action="store_true", help="List configurations")
@@ -54,10 +51,12 @@ class Setup(NotifyBase):
 
 		if opts.list:
 			if self.common:
-				self._print_configuration(self.common, "Available common configurations:")
+				self._print_configuration(self.common, "Common configurations:")
 			
 			if self.local:
-				self._print_configuration(self.local,  "Available local configurations:")
+				self._print_configuration(self.local,  "Local configurations:")
+
+			print "   * -> run      - -> not run "
 		else:
 			self.run_configure()		
 
@@ -70,7 +69,7 @@ class Setup(NotifyBase):
 		log.info("Found %s local configurations" % len(self.local))
 		self.setup(self.local)
 
-		#self.finish()
+		self.finish()
 
 	def setup(self, configs):
 		for conf in configs:
@@ -106,14 +105,14 @@ class Setup(NotifyBase):
 		return result
 
 	def _print_configuration(self, configs, title):
+		maximum = len(max([os.path.split(self._normalize(c))[1] for c in configs], key=len)) + 1
+
 		print """
 %s
 
-  Run Scriptname  Description
-  === =========== =============
-""" % title
-				
-		
+  Run %s Description
+  === %s %s
+""" % (title, "Scriptname" + (" ") * (maximum - len("Scriptname")), "=" * maximum, "=" * maximum)
 				
 		for conf in configs:
 			scriptname = os.path.split(self._normalize(conf))[1]
@@ -121,15 +120,10 @@ class Setup(NotifyBase):
 			
 			klass = imp.load_source('module_%s' % scriptname, conf).ConfigRunner()
 			
-			run = "-"
-			
-			if klass.has_run():
-				run = "*"
-			
-			print "   %s  %s\t - %s" % (run, scriptname, klass.get_description())
+			print "   %s  %s %s" % ("*" if klass.has_run() else "-", 
+				scriptname + (" ") * (maximum - len(scriptname)), klass.get_description())
 		
 		print
-		
 
 	def _set_configurations(self):
 		configs = self.get_configs()
