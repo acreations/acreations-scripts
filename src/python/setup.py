@@ -79,7 +79,7 @@ class Setup(NotifyBase):
 				
 			os.chdir(directory)
 		
-			if os.system("echo run %s" % conf) == 0:
+			if os.system("%s" % conf) == 0:
 				log.info("Successfully run configuration: %s", normalized)
 				self.success.append(conf)
 			else:
