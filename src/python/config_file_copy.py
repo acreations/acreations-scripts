@@ -8,7 +8,7 @@ import logging as log
 class ConfigFileCopy(Config):
 
 	def copy(self, source, target):
-		self.run_command("cp %s %s" % source, target)
+		self.run_command("cp %s %s" % (source, target))
 
 	def copy_recursive(self, source, target):
 		self.run_command("cp -rf %s %s" % source, target)
