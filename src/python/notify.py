@@ -50,38 +50,45 @@ class NotifyBase(Base):
 	def get_title(self):
 		return ""
 
+	def has_mail_configuration(self):
+		return False
+
 	def on_finish(self):
-		log.debug("Notify system administrator")
+		if self.has_mail_configuration():
 
-		self.set_default_data()
+			log.debug("Notify system administrator")
 
-		if not self._data['SMTP_SERVER']:
-			log.info("SMTP server not set, skipping sending email...")
-		elif not self._data['SMTP_PORT']:
-			log.info("SMTP port not set, skipping sending email...")
-		elif not self._data['MAILTO']:
-			log.info("Receivers not set, skipping sending email... ")
-		elif not self._data['SENDER']:
-			log.info("Sender not set, skipping sending email... ")
-		else:
-			self._data['START_TIME']  = self.get_start_time()
-			self._data['FINISH_TIME'] = self.get_finish_time()
-			
-			self._data['TITLE']    = self.get_title()
-			
-			self._data['PID']      = self._get_pid()
-			
-			self._data['HOSTNAME'] = self._get_hostname()
-			self._data['USER']     = self._get_username()
+			self.set_default_data()
 
-			self._data['SUBJECT'] = self.get_subject()
-			self._data['HEADER']  = self.get_header(self._data)
-			self._data['MESSAGE'] = self.get_message(self._data)
-			self._data['FOOTER']  = self.get_footer(self._data)
+			if not self._data['SMTP_SERVER']:
+				log.info("SMTP server not set, skipping sending email...")
+			elif not self._data['SMTP_PORT']:
+				log.info("SMTP port not set, skipping sending email...")
+			elif not self._data['MAILTO']:
+				log.info("Receivers not set, skipping sending email... ")
+			elif not self._data['SENDER']:
+				log.info("Sender not set, skipping sending email... ")
+			else:
+				self._data['START_TIME']  = self.get_start_time()
+				self._data['FINISH_TIME'] = self.get_finish_time()
+				
+				self._data['TITLE']    = self.get_title()
+				
+				self._data['PID']      = self._get_pid()
+				
+				self._data['HOSTNAME'] = self._get_hostname()
+				self._data['USER']     = self._get_username()
 
-			message = self._get_mail_template(self._data)
+				self._data['SUBJECT'] = self.get_subject()
+				self._data['HEADER']  = self.get_header(self._data)
+				self._data['MESSAGE'] = self.get_message(self._data)
+				self._data['FOOTER']  = self.get_footer(self._data)
 
-			self.send_mail(self._data, message)
+				message = self._get_mail_template(self._data)
+
+				self.send_mail(self._data, message)
+			else:
+				log.debug("No mail configuration set");
 
 	def on_set_default_data(self, data):
 		pass

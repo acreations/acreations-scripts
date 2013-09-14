@@ -47,6 +47,9 @@ class LoopiaDNSUpdater(NotifyBase):
 	def get_subject(self):
 		return "[%s] LOOPIA DNS UPDATER" % self._response
 
+	def has_mail_configuration(self):
+		return self.get_configs().has_section(self.CONF_SECTION)
+
 	def on_create_config_parser(self, config):
 		if not config.has_section(self.CONF_SECTION):
 			log.error("Configuration has not section %s" % self.CONF_SECTION)

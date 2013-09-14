@@ -47,6 +47,9 @@ class Mirrorsync(NotifyBase):
 	def get_title(self):
 		return "SUMMARY OF MIRRORSYNC"
 
+	def has_mail_configuration(self):
+		return self.get_configs().has_section(self.CONF_SECTION)
+
 	def on_create_option_parser(self, parser):
 		parser.description = "Description of the script"
 		parser.add_option("-s", "--source",  action="store", help="Source directory (backup from)")

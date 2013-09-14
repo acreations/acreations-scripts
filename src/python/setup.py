@@ -35,6 +35,9 @@ class Setup(NotifyBase):
 	def get_title(self):
 		return "SUMMARY OF SETUP"
 
+	def has_mail_configuration(self):
+		return self.get_configs().has_section(self.CONF_SECTION)
+
 	def on_create_option_parser(self, parser):
 		parser.description = "Description of the script"
 		parser.add_option("-l", "--list", action="store_true", help="List configurations")
