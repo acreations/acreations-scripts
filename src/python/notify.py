@@ -87,8 +87,8 @@ class NotifyBase(Base):
 				message = self._get_mail_template(self._data)
 
 				self.send_mail(self._data, message)
-			else:
-				log.debug("No mail configuration set");
+		else:
+			log.debug("No mail configuration set");
 
 	def on_set_default_data(self, data):
 		pass
