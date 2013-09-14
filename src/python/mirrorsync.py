@@ -78,7 +78,7 @@ class Mirrorsync(NotifyBase):
 		if opts.verbose:
 			self._progress = "--progress"
 	
-		command = "rsync -rLptgoD --delete-after %s %s %s" % (self._progress, self._temp[self.CONF_SOURCE], self._temp[self.CONF_TARGET])
+		command = "rsync -rLptgoOD --delete-after %s %s %s" % (self._progress, self._temp[self.CONF_SOURCE], self._temp[self.CONF_TARGET])
 		
 		while not self._completed and self._temp[self.CONF_FAILURE] < 10:
 			code = os.system(command)
