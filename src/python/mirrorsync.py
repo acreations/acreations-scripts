@@ -11,6 +11,7 @@ class Mirrorsync(NotifyBase):
 	CONF_SOURCE  = "SOURCE"
 	CONF_TARGET  = "TARGET"
 	CONF_FAILURE = "FAILURE"
+	CONF_FLAGS   = "FLAGS"
 
 	def get_help_configuration(self):
 		return """
@@ -74,11 +75,14 @@ class Mirrorsync(NotifyBase):
 		self._completed = False
 		self._temp[self.CONF_FAILURE] = 0
 		self._progress = ""
-	
+		self._flags = 
+
 		if opts.verbose:
 			self._progress = "--progress"
+			self._temp[self.CONF_FLAGS] = self._temp[self.CONF_FLAGS] + "v"
 	
-		command = "rsync -rLptgoOD --delete-after %s %s %s" % (self._progress, self._temp[self.CONF_SOURCE], self._temp[self.CONF_TARGET])
+		command = "rsync %s --delete-after %s %s %s" % 
+			(self._temp[self.CONF_FLAGS], self._progress, self._temp[self.CONF_SOURCE], self._temp[self.CONF_TARGET])
 		
 		while not self._completed and self._temp[self.CONF_FAILURE] < 10:
 			code = os.system(command)
@@ -99,6 +103,16 @@ class Mirrorsync(NotifyBase):
 
 			if configs.has_option(self.CONF_SECTION, self.CONF_TARGET):
 				self._temp[self.CONF_TARGET] = configs.get(self.CONF_SECTION, self.CONF_TARGET)
+
+	def _read_flags(self):
+		configs = self.get_configs()
+
+		self._temp[self.CONF_FLAGS] = "-a"
+
+		if configs.has_section(self.CONF_SECTION):
+
+			if configs.has_option(self.CONF_SECTION, self.CONF_FLAGS):
+				self._temp[self.CONF_FLAGS] = configs.get(self.CONF_SECTION, self.CONF_FLAGS)
 
 	def _read_options(self):
 		opts = self.get_opts();
@@ -127,8 +141,6 @@ class Mirrorsync(NotifyBase):
 			exit(4)
 		else:
 			log.debug("Set source directory to: %s " % self._temp[self.CONF_TARGET])
-
-
 
 if __name__ == '__main__':
 	Mirrorsync().run()
