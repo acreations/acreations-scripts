@@ -75,7 +75,6 @@ class Mirrorsync(NotifyBase):
 		self._completed = False
 		self._temp[self.CONF_FAILURE] = 0
 		self._progress = ""
-		self._flags = 
 
 		if opts.verbose:
 			self._progress = "--progress"
