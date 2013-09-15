@@ -12,6 +12,7 @@ class Mirrorsync(NotifyBase):
 	CONF_TARGET  = "TARGET"
 	CONF_FAILURE = "FAILURE"
 	CONF_FLAGS   = "FLAGS"
+	CONF_EXCLUDE = "EXCLUDE"
 
 	def get_help_configuration(self):
 		return """
@@ -81,8 +82,10 @@ class Mirrorsync(NotifyBase):
 			self._progress = "--progress"
 			self._temp[self.CONF_FLAGS] = self._temp[self.CONF_FLAGS] + "v"
 
-		command = "rsync %s --exclude '@eaDir' --exclude '.DS_Store' --delete-after %s %s %s" % (self._temp[self.CONF_FLAGS], self._progress, self._temp[self.CONF_SOURCE], self._temp[self.CONF_TARGET])
-		
+		command = "rsync %s " % self._temp[self.CONF_FLAGS]
+		command = command + "--exclude '*eaDir' --exclude '.DS_Store' --exclude 'Desktop.ini' --exclude 'Thumbs.db' "
+		command = command + "--delete-after %s %s %s" % (self._progress, self._temp[self.CONF_SOURCE], self._temp[self.CONF_TARGET])
+
 		while not self._completed and self._temp[self.CONF_FAILURE] < 10:
 			code = os.system(command)
 		
