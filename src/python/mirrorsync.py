@@ -80,8 +80,7 @@ class Mirrorsync(NotifyBase):
 			self._progress = "--progress"
 			self._temp[self.CONF_FLAGS] = self._temp[self.CONF_FLAGS] + "v"
 	
-		command = "rsync %s --delete-after %s %s %s" % 
-			(self._temp[self.CONF_FLAGS], self._progress, self._temp[self.CONF_SOURCE], self._temp[self.CONF_TARGET])
+		command = "rsync %s --delete-after %s %s %s" % (self._temp[self.CONF_FLAGS], self._progress, self._temp[self.CONF_SOURCE], self._temp[self.CONF_TARGET])
 		
 		while not self._completed and self._temp[self.CONF_FAILURE] < 10:
 			code = os.system(command)
