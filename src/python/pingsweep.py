@@ -75,7 +75,7 @@ class Pingsweep(NotifyBase):
 		self._completed = False
 
 		if not err:
-			process  = subprocess.Popen("cat %s" % (target), shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+			process  = subprocess.Popen("cat %s.new" % (target), shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 			out, err = process.communicate()
 
 			if out:
