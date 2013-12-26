@@ -69,7 +69,7 @@ class Pingsweep(NotifyBase):
 		os.system("touch %s.new" % target)
 		os.system("touch %s.old" % target)
 
-		process  = subprocess.Popen("%s > %s.new" % (command,target), shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+		process  = subprocess.Popen("%s | grep -v Starting | grep -v seconds > %s.new" % (command,target), shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 		out, err = process.communicate()
 
 		self._completed = False
