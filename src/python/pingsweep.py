@@ -53,7 +53,7 @@ class Pingsweep(NotifyBase):
 	def _locate_ip_address(self):
 		log.debug("Locate machines ip address")
 
-		command = "ifconfig | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1'"
+		command = "/sbin/ifconfig | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1'"
 		process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 		ip, err = process.communicate()
 
@@ -63,7 +63,7 @@ class Pingsweep(NotifyBase):
 
 	def _run(self):
 		subnet  = self.IP_ADDR[:self.IP_ADDR.rindex('.')]
-		command = "nmap -sP %s.1-254" % subnet
+		command = "/usr/bin/nmap -sP %s.1-254" % subnet
 		target  = "/tmp/pingsweep"
 
 		os.system("touch %s.new" % target)
