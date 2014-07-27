@@ -7,9 +7,11 @@ import logging as log
 import re
 
 class ExternalIPCheck(Base):
+	"""
+	Check external IP address from predefined sources
+	"""
 
 	def check_external_ip_addr(self):
-		log.debug("Check external ip address")
 		self._ipaddr = None
 		self._ipaddr or self.source_loopia()
 
@@ -22,7 +24,7 @@ class ExternalIPCheck(Base):
 	def on_start(self):
 		self.check_external_ip_addr()
 
-		log.info("Found ip address: %s" % self._ipaddr)
+		log.info(self._ipaddr)
 
 	def source_loopia(self):
 		server = "dns.loopia.se"
@@ -32,18 +34,18 @@ class ExternalIPCheck(Base):
 		conn = httplib.HTTPConnection(server)
 
 		log.debug("Serivce %s" % script)
-  		conn.request("GET", script)
+		conn.request("GET", script)
 
-  		resp = conn.getresponse()
+		resp = conn.getresponse()
 
-  		if resp.status != 200:
-  			log.debug("The response from server is not valid: %s" % resp.status)
-  			return None
+		if resp.status != 200:
+			log.debug("The response from server is not valid: %s" % resp.status)
+			return None
 
-  		result = re.findall(r'[0-9]+(?:\.[0-9]+){3}', resp.read())
+		result = re.findall(r'[0-9]+(?:\.[0-9]+){3}', resp.read())
 
-  		if result:
-  			self._ipaddr = result[0]
+		if result:
+			self._ipaddr = result[0]
 
-if __name__ == '__main__':
+if __name__ == '__main__': 
 	ExternalIPCheck().run()
