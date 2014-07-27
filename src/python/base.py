@@ -33,7 +33,7 @@ class Base(object):
 		if environ and os.path.isfile(environ):
 			try:
 				log.info("Use default configuration: %s", environ)
-				self._config.read(options.config)
+				self._config.read(environ)
 			except ConfigParser.ParsingError, err:
 				log.error("Cannot parse default configuration %s" % environ)
 				exit(1)
