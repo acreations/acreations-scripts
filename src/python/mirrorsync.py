@@ -83,7 +83,7 @@ class Mirrorsync(NotifyBase):
 			self._temp[self.CONF_FLAGS] = self._temp[self.CONF_FLAGS] + "v"
 
 		command = "rsync %s " % self._temp[self.CONF_FLAGS]
-		command = command + "--exclude '*eaDir' --exclude '.DS_Store' --exclude 'Desktop.ini' --exclude 'Thumbs.db' "
+		command = command + "--exclude '*eaDir' --exclude '.DS_Store' --exclude 'Desktop.ini' --exclude 'Thumbs.db' --no-perms"
 		command = command + "--delete-after %s %s %s" % (self._progress, self._temp[self.CONF_SOURCE], self._temp[self.CONF_TARGET])
 
 		while not self._completed and self._temp[self.CONF_FAILURE] < 10:
