@@ -1,6 +1,6 @@
 task copy(type:Copy) {
 	from fileTree("src").files
-	into 'build/scripts'
+	into 'build/bin'
 	exclude '**/*.pyc'
 	includeEmptyDirs = false
 }
