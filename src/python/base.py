@@ -3,21 +3,24 @@ from datetime import datetime
 from optparse import OptionParser
 
 import ConfigParser
+import inspect
 import logging as log
 import os
 
-class Base:
-	'''
-	Base class for all the script. Contain some option parsing and initiation of the logger
-	'''
+class Base(object):
+	"""
+	Base class for all the script and defines script lifecycle
+
+	Contain some option parsing and initiation of the logger
+	"""
 
 	DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
-	DEFAULT_CONFIGURATION = "configuration/default"
 
-	def _init_config_parser_(self):
+	def _init_config_parser(self):
 		self._config = SafeConfigParser()
 
 		options = self.get_opts()
+		environ = os.environ.get('BASE_CONFIGURATION', "configuration/default")
 
 		if options.config and os.path.isfile(options.config):
 			try:
@@ -27,12 +30,12 @@ class Base:
 				log.error("Cannot parse selected configuration %s" % options.config)
 				exit(1)
 		
-		if os.path.isfile(self.DEFAULT_CONFIGURATION):
+		if environ and os.path.isfile(environ):
 			try:
-				log.info("Use default configuration: %s", self.DEFAULT_CONFIGURATION)
+				log.info("Use default configuration: %s", environ)
 				self._config.read(options.config)
 			except ConfigParser.ParsingError, err:
-				log.error("Cannot parse default configuration %s" % self.DEFAULT_CONFIGURATION)
+				log.error("Cannot parse default configuration %s" % environ)
 				exit(1)
 
 		self.on_create_config_parser(self._config)
@@ -40,7 +43,7 @@ class Base:
 		return self._config
 
 
-	def _init_logger_(self):
+	def _init_logger(self):
 		options = self.get_opts()
 
 		level = log.INFO
@@ -55,7 +58,7 @@ class Base:
 
 		return log
 
-	def _init_option_parser_(self):
+	def _init_option_parser(self):
 		OptionParser.format_epilog = lambda self, formatter: self.epilog
 		
 		self._parser = OptionParser(epilog=self.get_epilog())
@@ -103,6 +106,9 @@ class Base:
 	def get_finish_time(self):
 		return self._finish_time
 
+	def get_log_format(self):
+		return '%(asctime)s %(levelname)s: %(message)s'
+
 	def get_help_configuration(self):
 		return None
 		
@@ -112,11 +118,11 @@ class Base:
 	def get_help_footer(self):
 		return None
 
+	def get_script_name(self):
+		return None
+
 	def get_opts(self):
 		return self._opts
-
-	def get_log_format(self):
-		return '%(asctime)s %(levelname)s: %(message)s'
 
 	def get_start_time(self):
 		return self._start_time
@@ -134,17 +140,16 @@ class Base:
 		pass
 
 	def start(self):
-		log.info("Start running script")
 		self._start_time = datetime.now().strftime(self.DATETIME_FORMAT)
 		self.on_start()
 
 	def run(self):
-		self._init_option_parser_()
-		self._init_logger_()
-		self._init_config_parser_()
-	
-		log.debug("Start running the script")
-		log.debug("Options:   %s" % self.get_opts())
-		log.debug("Arguments: %s" % self.get_args())
+		self._init_option_parser()
+		self._init_logger()
+		self._init_config_parser()
+
+		log.debug("Run script:  %s" % self.__class__.__name__)
+		log.debug("Script opts: %s" % self.get_opts())
+		log.debug("Script args: %s" % self.get_args())
 
 		self.start()
