@@ -182,7 +182,7 @@ class Setup(NotifyBase):
 
 			description = "Not defined"
 
-			if hasattr(klass, 'property'):
+			if hasattr(klass, 'description'):
 				description = klass.description
 
 			print "  %s  %s %s  %s  %s" % (pad_num + str(self.counter), 
