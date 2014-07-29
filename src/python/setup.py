@@ -149,7 +149,7 @@ class Setup(NotifyBase):
 		if os.path.isfile('%s/%s' % (self._data['failed'], scriptname)):
 			return time.ctime(os.path.getmtime('%s/%s' % (self._data['failed'], scriptname)))
 
-		return ''
+		return " " * 24
 
 	def _normalize(self, path):
 		result = path
