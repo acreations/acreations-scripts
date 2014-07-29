@@ -165,7 +165,7 @@ class Setup(NotifyBase):
 		print """
 %s
 
-  No Configuration %s Run Time                      Description
+  No Configuration %s Run Last time run             Description
   == %s === %s %s
 """ % (title, (" ") * (maximum - 14), "=" * maximum, "=" * 25, "=" * maximum)
 				
