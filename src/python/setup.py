@@ -126,6 +126,9 @@ class Setup(NotifyBase):
 		for base, dirs, filenames in os.walk(path, followlinks=True):
 			for filename in fnmatch.filter(filenames, 'configure.py'):
 				result.append(os.path.realpath(os.path.join(base, filename)))
+
+		result.sort()
+
 		return result
 
 	def _get_run_status(self, scriptname):
