@@ -165,9 +165,9 @@ class Setup(NotifyBase):
 		print """
 %s
 
-  No %s Run Time
-  == %s === %s
-""" % (title, "Configuration" + (" ") * (maximum - len("Configuration")), "=" * maximum, "=" * maximum)
+  No Configuration %s Run Time                      Description
+  == %s === %s %s
+""" % (title, (" ") * (maximum - 14), "=" * maximum, "=" * 25, "=" * maximum)
 				
 		for conf in configs:
 			scriptname = os.path.split(self._normalize(conf))[1]
@@ -180,8 +180,13 @@ class Setup(NotifyBase):
 
 			klass  = imp.load_source('module_%s' % scriptname, conf)
 
-			print "  %s  %s %s  %s" % (pad_num + str(self.counter), 
-				scriptname + pad_name, status, run_time)
+			description = "Not defined"
+
+			if hasattr(klass, 'property'):
+				description = klass.description
+
+			print "  %s  %s %s  %s  %s" % (pad_num + str(self.counter), 
+				scriptname + pad_name, status, run_time, description)
 		
 			self.counter += 1
 
