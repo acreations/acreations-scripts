@@ -183,7 +183,7 @@ class Setup(NotifyBase):
 			description = "Not defined"
 
 			if hasattr(klass, 'description'):
-				description = klass.description
+				description = klass.description.capitalize()
 
 			print "  %s  %s %s  %s  %s" % (pad_num + str(self.counter), 
 				scriptname + pad_name, status, run_time, description)
